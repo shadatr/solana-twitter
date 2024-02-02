@@ -5,10 +5,13 @@ import { GrChat } from "react-icons/gr";
 import { TiHomeOutline } from "react-icons/ti";
 import assets from "../assets";
 import { Link, useLocation } from "react-router-dom";
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const SideBar = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+  const { connected } = useWallet()
 
   return (
     <div className="flex flex-col items-start space-y-2 w-[250px] p-10">
@@ -47,6 +50,7 @@ const SideBar = () => {
         <HiOutlineUsers size={40} className={`${isActive("/users") &&'text-babyBlue'}`} />
         <p>Users</p>
       </Link>
+      {connected &&
       <Link
         to="/profile"
         className={`flex flex-row gap-2 text-md items-center p-4 hover:bg-gray rounded-3xl ${
@@ -56,6 +60,8 @@ const SideBar = () => {
         <LuUser2 size={40} className={`${isActive("/profile") &&'text-babyBlue'}`}  />
         <p>Profile</p>
       </Link>
+      }
+      <WalletMultiButton className='bg-babyBlue'style={{background: "#71CBE8", borderRadius: "30px"}}/>
     </div>
   );
 };

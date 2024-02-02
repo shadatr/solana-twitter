@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import Tweet from "./Tweet";
 import { TweetType } from "../Types";
+import { useWalletInitializer } from "../useWorkspace";
 
 const Profile = () => {
   const textarea = useRef(null);
@@ -8,16 +9,12 @@ const Profile = () => {
   const [leftCharacters, setLeftCharacters] = useState(280);
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const [search, setSearch] = useState(false);
-
-  const handleSearch = () => {
-    setSearch(true);
-  };
+  const {wallet}= useWalletInitializer();
 
   const handleInputChange = () => {
-    const inputText = topic.current.value;
+    const inputText = textarea.current.value;
     const numberOfCharacters = inputText.length;
     setLeftCharacters(280 - numberOfCharacters);
-    console.log("Number of characters:", numberOfCharacters);
   };
 
   return (
@@ -26,10 +23,9 @@ const Profile = () => {
         Topics
       </p>
       <div className="relative w-full">
-        <p
-          className="text-gray-700 w-full pl-10 pr-32 py-4 bg-gray"
-        >95MebuvrWFHPGqVvHNzKMRuZQ2FPNaetHk6z6ccix9Fz</p>
-       
+        <p className="text-gray-700 w-full pl-10 pr-32 py-4 bg-gray">
+          { wallet?.publicKey?.toBase58() }
+        </p>
       </div>
       <div>
         <textarea
@@ -38,6 +34,7 @@ const Profile = () => {
           className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3"
           placeholder="What's happening?"
           v-model="content"
+          onChange={handleInputChange}
         />
         <span className="flex items-center justify-between w-full border-b border-gray pb-5 px-8">
           <input
@@ -45,7 +42,6 @@ const Profile = () => {
             type="text"
             placeholder="# topic"
             className="text-pink-500 rounded-full p-2 bg-gray bg-gray-100"
-            onChange={handleInputChange}
           />
           <span className="flex items-center gap-5">
             <p>{leftCharacters} left</p>
