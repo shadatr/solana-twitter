@@ -7,6 +7,12 @@ skip-lint = false
 [programs.localnet]
 solana_twitter = "EfpUgYt1dqvkdG2mneNUeDwW8PB9NBuVxFqMfK5vkgjG"
 
+[programs.devnet]
+solana_twitter = "EfpUgYt1dqvkdG2mneNUeDwW8PB9NBuVxFqMfK5vkgjG"
+
+[programs.mainnet]
+solana_twitter = "EfpUgYt1dqvkdG2mneNUeDwW8PB9NBuVxFqMfK5vkgjG"
+
 [registry]
 url = "https://api.apr.dev"
 

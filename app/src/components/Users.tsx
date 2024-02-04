@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Tweet from "./Tweet";
 import { TweetType } from "../Types";
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
+import { useWalletInitializer } from "../useWorkspace";
+import { web3 } from "@project-serum/anchor";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -10,11 +11,42 @@ const Users = () => {
   const [user, setUser] = useState(userId);
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const [search, setSearch] = useState(false);
+  const { program } = useWalletInitializer();
 
-  const handleSearch = () => {
+  useEffect(()=>{
+    if(userId){
+      handleSearch()
+    }
+  },[])
+  
+  const handleSearch = async () => {
     navigate(`/users/${user}`);
-    setSearch(true)
-  }
+    setSearch(true);
+
+    const authorFilter = (user) => ({
+      memcmp: {
+        offset: 8,
+        bytes: user,
+      },
+    });
+
+    try {
+      const tweetsData = await program.account.tweet.all([authorFilter(user)]);
+      const userTweets = tweetsData
+        .filter((tweet) => tweet.account.author.toString() === user)
+        .map((tweet) => ({
+          author_display: tweet.account.author.toString(),
+          created_ago: tweet.account.timestamp.toString(),
+          topic: tweet.account.topic.toString(),
+          content: tweet.account.content.toString(),
+        }));
+
+      setTweets(userTweets);
+    } catch (error) {
+      console.error("Error fetching tweets:", error);
+    }
+  };
+
 
   return (
     <div className="flex flex-col  items-start w-[700px] border-l border-r border-gray">
@@ -29,16 +61,25 @@ const Users = () => {
           onChange={(e) => setUser(e.target.value)}
         />
         <div className="absolute right-0 inset-y-0 flex items-center pr-8">
-          <button className="bg-darkGray px-4 py-2 rounded-2xl font-bold text-secondary" onClick={handleSearch}>Search</button>
+          <button
+            className="bg-darkGray px-4 py-2 rounded-2xl font-bold text-secondary"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
         </div>
       </div>
-      {search&& 
-      <div>
-      
-      {tweets.map((tweet) => (
-        <Tweet tweet={tweet} />
-      ))}
-        </div>}
+      {search && (
+        <div>
+          {tweets.length !== 0 ? (
+            tweets.map((tweet, index) => <Tweet tweet={tweet} key={index} />)
+          ) : (
+            <div className="w-[700px] text-md font-bold items-center justify-center flex py-10 text-darkGray">
+              User not found...
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

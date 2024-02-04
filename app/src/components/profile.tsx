@@ -1,20 +1,72 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Tweet from "./Tweet";
 import { TweetType } from "../Types";
 import { useWalletInitializer } from "../useWorkspace";
+import { web3 } from "@project-serum/anchor";
 
 const Profile = () => {
   const textarea = useRef(null);
   const topic = useRef(null);
+  const [refresh, setRefresh]= useState(false)
   const [leftCharacters, setLeftCharacters] = useState(280);
   const [tweets, setTweets] = useState<TweetType[]>([]);
-  const [search, setSearch] = useState(false);
-  const {wallet}= useWalletInitializer();
+  const {wallet,program}= useWalletInitializer();
+  const user=wallet?.publicKey?.toBase58();
+
+  useEffect(()=>{
+    const fetchTweets =async ()=>{
+      const authorFilter = (user) => ({
+        memcmp: {
+          offset: 8,
+          bytes: user,
+        },
+      });
+  
+      try {
+        const tweetsData = await program.account.tweet.all([authorFilter(user)]);
+        const userTweets = tweetsData
+          .filter((tweet) => tweet.account.author.toString() === user)
+          .map((tweet) => ({
+            author_display: tweet.account.author.toString(),
+            created_ago: tweet.account.timestamp.toString(),
+            topic: tweet.account.topic.toString(),
+            content: tweet.account.content.toString(),
+          }));
+  
+        setTweets(userTweets);
+      } catch (error) {
+        console.error("Error fetching tweets:", error);
+      }
+    }
+    fetchTweets();
+  },[refresh])
 
   const handleInputChange = () => {
     const inputText = textarea.current.value;
     const numberOfCharacters = inputText.length;
     setLeftCharacters(280 - numberOfCharacters);
+  };
+
+  const sendtweet = async () => {
+    if (topic.current.value && textarea.current.value) {
+      const tweet = web3.Keypair.generate();
+
+      await program.rpc.sendTweet(topic.current.value, textarea.current.value, {
+        accounts: {
+          author: wallet.publicKey,
+          tweet: tweet.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+        },
+        signers: [tweet],
+      });
+
+      const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
+      console.log(tweetAccount);
+      topic.current.value = "";
+      textarea.current.value = "";
+      setLeftCharacters(280);
+    }
+    setRefresh(!refresh)
   };
 
   return (
@@ -45,7 +97,7 @@ const Profile = () => {
           />
           <span className="flex items-center gap-5">
             <p>{leftCharacters} left</p>
-            <button className="bg-babyBlue px-4 py-2 rounded-2xl font-bold text-secondary">
+            <button className="bg-babyBlue px-4 py-2 rounded-2xl font-bold text-secondary" onClick={sendtweet}>
               Tweet
             </button>
           </span>

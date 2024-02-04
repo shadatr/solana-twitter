@@ -10,6 +10,7 @@ const Home = () => {
   const [leftCharacters, setLeftCharacters] = useState(280);
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const { wallet, program } = useWalletInitializer();
+  const [refresh, setRefresh]= useState(false)
 
   useEffect(() => {
     const fetchTweets = async () => {
@@ -25,7 +26,7 @@ const Home = () => {
       setTweets(extractedTweets);
     };
     fetchTweets();
-  }, []);
+  }, [refresh]);
 
   const handleInputChange = () => {
     const inputText = textarea.current.value;
@@ -52,6 +53,7 @@ const Home = () => {
       textarea.current.value = "";
       setLeftCharacters(280);
     }
+    setRefresh(!refresh)
   };
 
   return (

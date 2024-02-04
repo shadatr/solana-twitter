@@ -1,8 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Tweet from "./Tweet";
 import { TweetType } from "../Types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useParams, useNavigate } from "react-router-dom";
+import bs58 from 'bs58'
+import { useWalletInitializer } from "../useWorkspace";
+import { web3 } from "@project-serum/anchor";
 
 const Topics = () => {
   const navigate = useNavigate();
@@ -13,16 +16,69 @@ const Topics = () => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const [search, setSearch] = useState(topic ? true : false);
   const { connected } = useWallet();
+  const { program, wallet } = useWalletInitializer();
 
-  const handleSearch = () => {
+  useEffect(()=>{
+    if(topicId){
+      handleSearch()
+    }
+  },[])
+
+  const handleSearch = async () => {
     navigate(`/topics/${topic}`);
     setSearch(true);
+
+    const authorFilter = (topic) => ({
+      memcmp: {
+        offset:  8 + 32 + 8 + 4,
+        bytes: bs58.encode(Buffer.from(topic)),
+      },
+    });
+
+    try {
+      const tweetsData = await program.account.tweet.all([authorFilter(topic)]);
+      const userTweets = tweetsData
+        .filter((tweet) => tweet.account.topic.toString() === topic)
+        .map((tweet) => ({
+          author_display: tweet.account.author.toString(),
+          created_ago: tweet.account.timestamp.toString(),
+          topic: tweet.account.topic.toString(),
+          content: tweet.account.content.toString(),
+        }));
+
+      setTweets(userTweets);
+      console.log(userTweets)
+    } catch (error) {
+      console.error("Error fetching tweets:", error);
+    }
   };
 
   const handleInputChange = () => {
     const inputText = textarea.current.value;
     const numberOfCharacters = inputText.length;
     setLeftCharacters(280 - numberOfCharacters);
+  };
+
+  const sendtweet = async () => {
+    if (topic && textarea.current.value) {
+      const tweet = web3.Keypair.generate();
+
+      await program.rpc.sendTweet(topic, textarea.current.value, {
+        accounts: {
+          author: wallet.publicKey,
+          tweet: tweet.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+        },
+        signers: [tweet],
+      });
+
+      const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
+      console.log(tweetAccount);
+      setTopic("");
+      textarea.current.value = "";
+      setLeftCharacters(280);
+    }
+    handleSearch()
   };
 
   return (
@@ -64,7 +120,7 @@ const Topics = () => {
                 </p>
                 <span className="flex items-center gap-5">
                   <p>{leftCharacters} left</p>
-                  <button className="bg-babyBlue px-4 py-2 rounded-2xl font-bold text-secondary">
+                  <button className="bg-babyBlue px-4 py-2 rounded-2xl font-bold text-secondary"  onClick={sendtweet}>
                     Tweet
                   </button>
                 </span>
@@ -75,9 +131,13 @@ const Topics = () => {
               Connect your wallet to start tweeting...{" "}
             </p>
           )}
-          {tweets.map((tweet) => (
-            <Tweet tweet={tweet} />
-          ))}
+          {tweets.length !== 0 ? (
+            tweets.map((tweet, index) => <Tweet tweet={tweet} key={index} />)
+          ) : (
+            <div className="w-[700px] text-md font-bold items-center justify-center flex py-10 text-darkGray">
+              No tweets were found in this topic...
+            </div>
+          )}
         </div>
       )}
     </div>

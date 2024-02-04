@@ -14,10 +14,10 @@ function App() {
           <SideBar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/topics/:topicId" element={<Topics />} />
             <Route path="/topics" element={<Topics />} />
-            <Route path="/users/:userId" element={<Users />} />
+            <Route path="/topics/:topicId" element={<Topics />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/users/:userId" element={<Users />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
