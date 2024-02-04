@@ -26,6 +26,7 @@ const Home = () => {
       setTweets(extractedTweets);
     };
     fetchTweets();
+    
   }, [refresh]);
 
   const handleInputChange = () => {
