@@ -62,13 +62,14 @@ const Home = () => {
       {wallet.connected ? (
         [
           <textarea
+          key={1}
             rows={1}
             ref={textarea}
             className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3"
             placeholder="What's happening?"
             onChange={handleInputChange}
           />,
-          <span className="flex items-center justify-between w-full border-b border-gray pb-5 px-8">
+          <span key={2} className="flex items-center justify-between w-full border-b border-gray pb-5 px-8">
             <input
               ref={topic}
               type="text"
@@ -76,7 +77,7 @@ const Home = () => {
               className="text-pink-500 rounded-full p-2 bg-gray bg-gray-100"
               
             />
-            <span className="flex items-center gap-5">
+            <span key={3} className="flex items-center gap-5">
               <p>{leftCharacters} left</p>
               <button
                 className={`${

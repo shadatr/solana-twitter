@@ -10,11 +10,11 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
 const rootElement = document.getElementById("root");
-
+console.log(import.meta.env.VITE_CLUSTER_URL)
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
-      <ConnectionProvider endpoint="http://127.0.0.1:8899">
+      <ConnectionProvider endpoint={import.meta.env.VITE_CLUSTER_URL}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <App />
