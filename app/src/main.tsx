@@ -6,6 +6,8 @@ import {PhantomWalletAdapter,SolflareWalletAdapter} from "@solana/wallet-adapter
 import {WalletProvider,ConnectionProvider} from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import { Buffer } from 'buffer';
+global.Buffer = Buffer;
 
 const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 
