@@ -46,6 +46,7 @@ const Topics = () => {
             tweet.account.content.toString() != ""
         )
         .map((tweet) => ({
+          publicKey: tweet.publicKey.toString(),
           author_display: tweet.account.author.toString(),
           created_ago: tweet.account.timestamp.toString(),
           topic: tweet.account.topic.toString(),

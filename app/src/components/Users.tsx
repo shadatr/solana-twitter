@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Tweet from "./Tweet";
 import { TweetType } from "../Types";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,6 +35,7 @@ const Users = () => {
       const userTweets = tweetsData
         .filter((tweet) => tweet.account.author.toString() === user && tweet.account.content.toString()!="")
         .map((tweet) => ({
+          publicKey: tweet.publicKey.toString(),
           author_display: tweet.account.author.toString(),
           created_ago: tweet.account.timestamp.toString(),
           topic: tweet.account.topic.toString(),

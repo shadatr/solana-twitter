@@ -75,12 +75,7 @@ export type SolanaTwitter = {
           "isSigner": true
         }
       ],
-      "args": [
-        {
-          "name": "tweetId",
-          "type": "publicKey"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [
@@ -210,12 +205,7 @@ export const IDL: SolanaTwitter = {
           "isSigner": true
         }
       ],
-      "args": [
-        {
-          "name": "tweetId",
-          "type": "publicKey"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [

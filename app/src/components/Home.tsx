@@ -21,6 +21,7 @@ const Home = () => {
       const tweetsData = await program.account.tweet.all();
       const extractedTweets: TweetType[] = tweetsData.filter((tweet) => tweet.account.content.toString()!="")
       .map((tweet) => ({
+        publicKey: tweet.publicKey.toString(),
         author_display: tweet.account.author.toString(),
         created_ago: tweet.account.timestamp.toString(),
         topic: tweet.account.topic.toString(),

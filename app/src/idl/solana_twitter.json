@@ -75,12 +75,7 @@
           "isSigner": true
         }
       ],
-      "args": [
-        {
-          "name": "tweetId",
-          "type": "publicKey"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [
