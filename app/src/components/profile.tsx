@@ -4,6 +4,7 @@ import { TweetType } from "../Types";
 import { useWalletInitializer } from "../useWorkspace";
 import { web3 } from "@project-serum/anchor";
 import { Button, Skeleton } from "@nextui-org/react";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const textarea = useRef(null);
@@ -57,25 +58,35 @@ const Profile = () => {
   };
 
   const sendtweet = async () => {
-    if (topic.current.value && textarea.current.value) {
-      const tweet = web3.Keypair.generate();
+    try {
+      if (topic.current.value && textarea.current.value) {
+        const tweet = web3.Keypair.generate();
 
-      await program.rpc.sendTweet(topic.current.value, textarea.current.value, {
-        accounts: {
-          author: wallet.publicKey,
-          tweet: tweet.publicKey,
-          systemProgram: web3.SystemProgram.programId,
-        },
-        signers: [tweet],
-      });
+        await program.rpc.sendTweet(
+          topic.current.value,
+          textarea.current.value,
+          {
+            accounts: {
+              author: wallet.publicKey,
+              tweet: tweet.publicKey,
+              systemProgram: web3.SystemProgram.programId,
+            },
+            signers: [tweet],
+          }
+        );
 
-      const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
-      console.log(tweetAccount);
-      topic.current.value = "";
-      textarea.current.value = "";
-      setLeftCharacters(280);
+        const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
+        console.log(tweetAccount);
+        topic.current.value = "";
+        textarea.current.value = "";
+
+        toast.success("The tweet has been sended successfully");
+        setLeftCharacters(280);
+      }
+      setRefresh(!refresh);
+    } catch (err) {
+      toast.error("Error Occurred");
     }
-    setRefresh(!refresh);
   };
 
   return (
@@ -118,7 +129,7 @@ const Profile = () => {
             </Button>
           </span>
         </span>
-        {loaded==true ? (
+        {loaded == true ? (
           tweets.length > 0 ? (
             tweets.map((tweet) => <Tweet tweet={tweet} />)
           ) : (
@@ -126,26 +137,26 @@ const Profile = () => {
               No tweets were found here...
             </div>
           )
-        ) : ( 
+        ) : (
           <div>
             <div className="w-full flex flex-col gap-2 p-6">
               <Skeleton className="h-5 w-1/4 rounded-lg" />
               <Skeleton className="h-5 w-4/5 rounded-lg" />
               <Skeleton className="h-5 w-1/6 rounded-lg" />
             </div>
-            <div className=" border-b border-gray w-[700px]"/>
+            <div className=" border-b border-gray w-[700px]" />
             <div className="w-full flex flex-col gap-2 p-6">
               <Skeleton className="h-5 w-1/4 rounded-lg" />
               <Skeleton className="h-5 w-4/5 rounded-lg" />
               <Skeleton className="h-5 w-1/6 rounded-lg" />
             </div>
-            <div className=" border-b border-gray w-[700px]"/>
+            <div className=" border-b border-gray w-[700px]" />
             <div className="w-full flex flex-col gap-2 p-6">
               <Skeleton className="h-5 w-1/4 rounded-lg" />
               <Skeleton className="h-5 w-4/5 rounded-lg" />
               <Skeleton className="h-5 w-1/6 rounded-lg" />
             </div>
-            <div className=" border-b border-gray w-[700px]"/>
+            <div className=" border-b border-gray w-[700px]" />
           </div>
         )}
       </div>

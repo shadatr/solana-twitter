@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import Topics from "./components/Topics";
 import Users from "./components/Users";
 import Profile from "./components/profile";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/users/:userId" element={<Users />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
+          <Toaster position="bottom-right" reverseOrder={false} />
         </div>
       </Router>
     </div>

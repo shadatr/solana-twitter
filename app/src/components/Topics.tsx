@@ -3,10 +3,11 @@ import Tweet from "./Tweet";
 import { TweetType } from "../Types";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useParams, useNavigate } from "react-router-dom";
-import bs58 from 'bs58'
+import bs58 from "bs58";
 import { useWalletInitializer } from "../useWorkspace";
 import { web3 } from "@project-serum/anchor";
 import { Button } from "@nextui-org/react";
+import toast from "react-hot-toast";
 
 const Topics = () => {
   const navigate = useNavigate();
@@ -19,11 +20,11 @@ const Topics = () => {
   const { connected } = useWallet();
   const { program, wallet } = useWalletInitializer();
 
-  useEffect(()=>{
-    if(topicId){
-      handleSearch()
+  useEffect(() => {
+    if (topicId) {
+      handleSearch();
     }
-  },[])
+  }, []);
 
   const handleSearch = async () => {
     navigate(`/topics/${topic}`);
@@ -31,7 +32,7 @@ const Topics = () => {
 
     const authorFilter = (topic) => ({
       memcmp: {
-        offset:  8 + 32 + 8 + 4,
+        offset: 8 + 32 + 8 + 4,
         bytes: bs58.encode(Buffer.from(topic)),
       },
     });
@@ -39,7 +40,11 @@ const Topics = () => {
     try {
       const tweetsData = await program.account.tweet.all([authorFilter(topic)]);
       const userTweets = tweetsData
-        .filter((tweet) => tweet.account.topic.toString() === topic&& tweet.account.content.toString()!="")
+        .filter(
+          (tweet) =>
+            tweet.account.topic.toString() === topic &&
+            tweet.account.content.toString() != ""
+        )
         .map((tweet) => ({
           author_display: tweet.account.author.toString(),
           created_ago: tweet.account.timestamp.toString(),
@@ -48,7 +53,7 @@ const Topics = () => {
         }));
 
       setTweets(userTweets);
-      console.log(userTweets)
+      console.log(userTweets);
     } catch (error) {
       console.error("Error fetching tweets:", error);
     }
@@ -61,25 +66,31 @@ const Topics = () => {
   };
 
   const sendtweet = async () => {
-    if (topic && textarea.current.value) {
-      const tweet = web3.Keypair.generate();
+    try {
+      if (topic && textarea.current.value) {
+        const tweet = web3.Keypair.generate();
 
-      await program.rpc.sendTweet(topic, textarea.current.value, {
-        accounts: {
-          author: wallet.publicKey,
-          tweet: tweet.publicKey,
-          systemProgram: web3.SystemProgram.programId,
-        },
-        signers: [tweet],
-      });
+        await program.rpc.sendTweet(topic, textarea.current.value, {
+          accounts: {
+            author: wallet.publicKey,
+            tweet: tweet.publicKey,
+            systemProgram: web3.SystemProgram.programId,
+          },
+          signers: [tweet],
+        });
 
-      const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
-      console.log(tweetAccount);
-      setTopic("");
-      textarea.current.value = "";
-      setLeftCharacters(280);
+        const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
+        console.log(tweetAccount);
+        setTopic("");
+        textarea.current.value = "";
+
+        toast.success("The tweet has been sended successfully");
+        setLeftCharacters(280);
+        handleSearch();
+      }
+    } catch (err) {
+      toast.error("Error Occurred");
     }
-    handleSearch()
   };
 
   return (
@@ -101,7 +112,6 @@ const Topics = () => {
           >
             Search
           </Button>
-          
         </div>
       </div>
       {search && (
@@ -123,15 +133,15 @@ const Topics = () => {
                 <span className="flex items-center gap-5">
                   <p>{leftCharacters} left</p>
                   <Button
-                className={`${
-                 (topic && textarea.current?.value)
-                    ? "bg-babyBlue"
-                    : "bg-darkGray hover:cursor-not-allowed"
-                } px-4 py-2 rounded-2xl font-bold text-secondary`}
-                onClick={sendtweet}
-              >
-                Tweet
-              </Button>
+                    className={`${
+                      topic && textarea.current?.value
+                        ? "bg-babyBlue"
+                        : "bg-darkGray hover:cursor-not-allowed"
+                    } px-4 py-2 rounded-2xl font-bold text-secondary`}
+                    onClick={sendtweet}
+                  >
+                    Tweet
+                  </Button>
                 </span>
               </span>,
             ]

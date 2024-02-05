@@ -4,6 +4,7 @@ import { TweetType } from "../Types";
 import { web3 } from "@project-serum/anchor";
 import { useWalletInitializer } from "../useWorkspace";
 import { Button, Skeleton } from "@nextui-org/react";
+import { toast } from "react-hot-toast";
 
 const Home = () => {
   const textarea = useRef(null);
@@ -40,24 +41,28 @@ const Home = () => {
   };
 
   const sendtweet = async () => {
-    if (topic.current.value && textarea.current.value) {
-      const tweet = web3.Keypair.generate();
-
-      await program.rpc.sendTweet(topic.current.value, textarea.current.value, {
-        accounts: {
-          author: wallet.publicKey,
-          tweet: tweet.publicKey,
-          systemProgram: web3.SystemProgram.programId,
-        },
-        signers: [tweet],
-      });
-
-      const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
-      topic.current.value = "";
-      textarea.current.value = "";
-      setLeftCharacters(280);
+    try{
+      if (topic.current.value && textarea.current.value) {
+        const tweet = web3.Keypair.generate();
+  
+        await program.rpc.sendTweet(topic.current.value, textarea.current.value, {
+          accounts: {
+            author: wallet.publicKey,
+            tweet: tweet.publicKey,
+            systemProgram: web3.SystemProgram.programId,
+          },
+          signers: [tweet],
+        });
+  
+        topic.current.value = "";
+        textarea.current.value = "";
+        toast.success("The tweet has been sended successfully");
+        setLeftCharacters(280);
+      }
+      setRefresh(!refresh)
+    }catch(err){
+      toast.error("Error Occurred");
     }
-    setRefresh(!refresh)
   };
 
   return (
