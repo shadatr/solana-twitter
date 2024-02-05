@@ -8,7 +8,7 @@ import Profile from "./components/profile";
 
 function App() {
   return (
-    <div className="flex w-screen justify-center items-center">
+    <div className="flex w-screen min-h-screen justify-center ">
       <Router>
         <div className="flex justify-center w-[1600px]">
           <SideBar />

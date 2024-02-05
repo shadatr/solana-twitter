@@ -14,15 +14,15 @@ const SideBar = () => {
   const { connected } = useWallet()
 
   return (
-    <div className="flex flex-col items-start space-y-2 w-[250px] p-10">
-      <Link
+    <div className="flex flex-col items-start mt-20 space-y-4 w-[250px] p-10">
+      {/* <Link
         to="/"
         className={` text-md items-center p-4 hover:bg-gray rounded-3xl ${
           isActive("/") && "font-black"
         }`}
       >
         <img width={50} height={50} src={assets.logo} />
-      </Link>
+      </Link> */}
       <Link
         to="/"
         className={`flex flex-row gap-2 text-md items-center p-4 hover:bg-gray rounded-3xl ${
@@ -61,7 +61,7 @@ const SideBar = () => {
         <p>Profile</p>
       </Link>
       }
-      <WalletMultiButton className='bg-babyBlue'style={{background: "#71CBE8", borderRadius: "30px"}}/>
+      <WalletMultiButton className='bg-babyBlue'style={{background: "#007F91", borderRadius: "30px"}}/>
     </div>
   );
 };

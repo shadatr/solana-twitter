@@ -31,6 +31,56 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "updateTweet",
+      "accounts": [
+        {
+          "name": "tweet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "author",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "tweetKey",
+          "type": "publicKey"
+        },
+        {
+          "name": "newContent",
+          "type": "string"
+        },
+        {
+          "name": "topic",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deleteTweet",
+      "accounts": [
+        {
+          "name": "tweet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "author",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "tweetId",
+          "type": "publicKey"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -69,6 +119,16 @@
       "code": 6001,
       "name": "ContentTooLong",
       "msg": "The provided content should be 280 characters long maximum."
+    },
+    {
+      "code": 6002,
+      "name": "Unauthorized",
+      "msg": "This user is Unauthorized"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidTweetId",
+      "msg": "This tweet id is unvalid"
     }
   ],
   "metadata": {

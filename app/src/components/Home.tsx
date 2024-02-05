@@ -3,6 +3,7 @@ import Tweet from "./Tweet";
 import { TweetType } from "../Types";
 import { web3 } from "@project-serum/anchor";
 import { useWalletInitializer } from "../useWorkspace";
+import { Button, Skeleton } from "@nextui-org/react";
 
 const Home = () => {
   const textarea = useRef(null);
@@ -11,12 +12,14 @@ const Home = () => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const { wallet, program } = useWalletInitializer();
   const [refresh, setRefresh]= useState(false)
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const fetchTweets = async () => {
 
       const tweetsData = await program.account.tweet.all();
-      const extractedTweets: TweetType[] = tweetsData.map((tweet) => ({
+      const extractedTweets: TweetType[] = tweetsData.filter((tweet) => tweet.account.content.toString()!="")
+      .map((tweet) => ({
         author_display: tweet.account.author.toString(),
         created_ago: tweet.account.timestamp.toString(),
         topic: tweet.account.topic.toString(),
@@ -24,6 +27,7 @@ const Home = () => {
       }));
 
       setTweets(extractedTweets);
+      setLoaded(true)
     };
     fetchTweets();
     
@@ -49,7 +53,6 @@ const Home = () => {
       });
 
       const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
-      console.log(tweetAccount);
       topic.current.value = "";
       textarea.current.value = "";
       setLeftCharacters(280);
@@ -66,7 +69,7 @@ const Home = () => {
           key={1}
             rows={1}
             ref={textarea}
-            className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3"
+            className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3 bg-black"
             placeholder="What's happening?"
             onChange={handleInputChange}
           />,
@@ -75,21 +78,20 @@ const Home = () => {
               ref={topic}
               type="text"
               placeholder="# topic"
-              className="text-pink-500 rounded-full p-2 bg-gray bg-gray-100"
-              
+              className="text-babyBlue rounded-full focus:outline-babyBlue py-2 px-4 bg-gray bg-gray-100"
             />
             <span key={3} className="flex items-center gap-5">
               <p>{leftCharacters} left</p>
-              <button
+              <Button
                 className={`${
-                  topic.current?.value && textarea.current?.value
+                 (topic.current?.value && textarea.current?.value)
                     ? "bg-babyBlue"
                     : "bg-darkGray hover:cursor-not-allowed"
                 } px-4 py-2 rounded-2xl font-bold text-secondary`}
                 onClick={sendtweet}
               >
                 Tweet
-              </button>
+              </Button>
             </span>
           </span>,
         ]
@@ -98,9 +100,36 @@ const Home = () => {
           Connect your wallet to start tweeting...{" "}
         </p>
       )}
-      {tweets.map((tweet) => (
-        <Tweet tweet={tweet} />
-      ))}
+      {loaded==true ? (
+          tweets.length > 0 ? (
+            tweets.map((tweet) => <Tweet tweet={tweet} />)
+          ) : (
+            <div className="w-[700px] text-md font-bold items-center justify-center flex py-10 text-darkGray">
+              No tweets were found here...
+            </div>
+          )
+        ) : ( 
+          <div>
+            <div className="w-full flex flex-col gap-2 p-6">
+              <Skeleton className="h-5 w-1/4 rounded-lg" />
+              <Skeleton className="h-5 w-4/5 rounded-lg" />
+              <Skeleton className="h-5 w-1/6 rounded-lg" />
+            </div>
+            <div className=" border-b border-gray w-[700px]"/>
+            <div className="w-full flex flex-col gap-2 p-6">
+              <Skeleton className="h-5 w-1/4 rounded-lg" />
+              <Skeleton className="h-5 w-4/5 rounded-lg" />
+              <Skeleton className="h-5 w-1/6 rounded-lg" />
+            </div>
+            <div className=" border-b border-gray w-[700px]"/>
+            <div className="w-full flex flex-col gap-2 p-6">
+              <Skeleton className="h-5 w-1/4 rounded-lg" />
+              <Skeleton className="h-5 w-4/5 rounded-lg" />
+              <Skeleton className="h-5 w-1/6 rounded-lg" />
+            </div>
+            <div className=" border-b border-gray w-[700px]"/>
+          </div>
+        )}
     </div>
   );
 };

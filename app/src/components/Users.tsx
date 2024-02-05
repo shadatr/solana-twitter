@@ -3,7 +3,7 @@ import Tweet from "./Tweet";
 import { TweetType } from "../Types";
 import { useNavigate, useParams } from "react-router-dom";
 import { useWalletInitializer } from "../useWorkspace";
-import { web3 } from "@project-serum/anchor";
+import { Button } from "@nextui-org/react";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const Users = () => {
     try {
       const tweetsData = await program.account.tweet.all([authorFilter(user)]);
       const userTweets = tweetsData
-        .filter((tweet) => tweet.account.author.toString() === user)
+        .filter((tweet) => tweet.account.author.toString() === user && tweet.account.content.toString()!="")
         .map((tweet) => ({
           author_display: tweet.account.author.toString(),
           created_ago: tweet.account.timestamp.toString(),
@@ -61,12 +61,12 @@ const Users = () => {
           onChange={(e) => setUser(e.target.value)}
         />
         <div className="absolute right-0 inset-y-0 flex items-center pr-8">
-          <button
+          <Button
             className="bg-darkGray px-4 py-2 rounded-2xl font-bold text-secondary"
             onClick={handleSearch}
           >
             Search
-          </button>
+          </Button>
         </div>
       </div>
       {search && (

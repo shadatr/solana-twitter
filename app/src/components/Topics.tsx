@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import bs58 from 'bs58'
 import { useWalletInitializer } from "../useWorkspace";
 import { web3 } from "@project-serum/anchor";
+import { Button } from "@nextui-org/react";
 
 const Topics = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Topics = () => {
     try {
       const tweetsData = await program.account.tweet.all([authorFilter(topic)]);
       const userTweets = tweetsData
-        .filter((tweet) => tweet.account.topic.toString() === topic)
+        .filter((tweet) => tweet.account.topic.toString() === topic&& tweet.account.content.toString()!="")
         .map((tweet) => ({
           author_display: tweet.account.author.toString(),
           created_ago: tweet.account.timestamp.toString(),
@@ -94,12 +95,13 @@ const Topics = () => {
           placeholder="# Topic"
         />
         <div className="absolute right-0 inset-y-0 flex items-center pr-8">
-          <button
+          <Button
             className="bg-darkGray px-4 py-2 rounded-2xl font-bold text-secondary"
             onClick={handleSearch}
           >
             Search
-          </button>
+          </Button>
+          
         </div>
       </div>
       {search && (
@@ -109,20 +111,27 @@ const Topics = () => {
               <textarea
                 rows={1}
                 ref={textarea}
-                className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3"
+                className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3 bg-black"
                 placeholder="What's happening?"
                 v-model="content"
                 onChange={handleInputChange}
               />,
               <span className="flex items-center justify-between w-full border-b border-gray pb-5 px-8">
-                <p className="text-pink-500 rounded-full p-3 bg-gray bg-gray-100">
+                <p className="text-babyBlue rounded-full p-3 bg-gray bg-gray-100">
                   # {topicId}
                 </p>
                 <span className="flex items-center gap-5">
                   <p>{leftCharacters} left</p>
-                  <button className="bg-babyBlue px-4 py-2 rounded-2xl font-bold text-secondary"  onClick={sendtweet}>
-                    Tweet
-                  </button>
+                  <Button
+                className={`${
+                 (topic && textarea.current?.value)
+                    ? "bg-babyBlue"
+                    : "bg-darkGray hover:cursor-not-allowed"
+                } px-4 py-2 rounded-2xl font-bold text-secondary`}
+                onClick={sendtweet}
+              >
+                Tweet
+              </Button>
                 </span>
               </span>,
             ]
