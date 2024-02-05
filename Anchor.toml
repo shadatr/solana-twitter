@@ -17,7 +17,7 @@ solana_twitter = "EfpUgYt1dqvkdG2mneNUeDwW8PB9NBuVxFqMfK5vkgjG"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = "/Users/shada/.config/solana/id.json"
 
 [scripts]
