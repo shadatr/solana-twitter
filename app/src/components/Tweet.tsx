@@ -96,7 +96,6 @@ const TweetComponent = ({ tweet }: { tweet: TweetType }) => {
     }catch(err){
       toast.error("Error Occurred");
     }
-    
   };
 
   const handleSave = async () => {
