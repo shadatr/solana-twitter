@@ -89,6 +89,7 @@ const Profile = () => {
     } catch (err) {
       toast.error("Error Occurred");
     }
+    
   };
 
   return (
