@@ -16,6 +16,7 @@ const Profile = () => {
   const { wallet, program } = useWalletInitializer();
   const user = wallet?.publicKey?.toBase58();
 
+
   useEffect(() => {
     const fetchTweets = async () => {
       const authorFilter = (user) => ({
@@ -91,12 +92,12 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col  items-start w-[700px] border-l border-r border-gray">
+    <div className="flex flex-col  items-start lg:w-[700px] sm:w-[350px] border-l border-r border-gray lg:text-sm sm:text-xxsm">
       <p className=" border-b border-gray p-4 text-md font-bold w-full">
         Topics
       </p>
-      <div className="relative w-full">
-        <p className="text-gray-700 w-full pl-10 pr-32 py-4 bg-gray">
+      <div className="relative  lg:w-full sm:w-[300px]">
+        <p className="text-gray-700 lg:w-full sm:w-[300px] pl-10 pr-32 py-4 bg-gray ">
           {wallet?.publicKey?.toBase58()}
         </p>
       </div>
@@ -104,7 +105,7 @@ const Profile = () => {
         <textarea
           rows={1}
           ref={textarea}
-          className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3 bg-black"
+          className="text-xl  lg:w-[650px] sm:w-[300px] focus:outline-none resize-none p-2 mx-8 my-3 bg-black"
           placeholder="What's happening?"
           v-model="content"
           onChange={handleInputChange}
@@ -134,30 +135,30 @@ const Profile = () => {
           tweets.length > 0 ? (
             tweets.map((tweet) => <Tweet tweet={tweet} />)
           ) : (
-            <div className="w-[700px] text-md font-bold items-center justify-center flex py-10 text-darkGray">
+            <div className=" lg:w-[700px] sm:w-[350px] text-md font-bold items-center justify-center flex py-10 text-darkGray">
               No tweets were found here...
             </div>
           )
         ) : (
           <div>
+             <div className="lg:w-[700px] sm:w-[350px] flex flex-col gap-2 p-6">
+              <Skeleton className="h-5 w-1/4 rounded-lg" />
+              <Skeleton className="h-5 w-4/5 rounded-lg" />
+              <Skeleton className="h-5 w-1/6 rounded-lg" />
+            </div>
+            <div className=" border-b border-gray lg:w-[700px] sm:w-[350px]"/>
             <div className="w-full flex flex-col gap-2 p-6">
               <Skeleton className="h-5 w-1/4 rounded-lg" />
               <Skeleton className="h-5 w-4/5 rounded-lg" />
               <Skeleton className="h-5 w-1/6 rounded-lg" />
             </div>
-            <div className=" border-b border-gray w-[700px]" />
+            <div className=" border-b border-gray lg:w-[700px] sm:w-[350px]"/>
             <div className="w-full flex flex-col gap-2 p-6">
               <Skeleton className="h-5 w-1/4 rounded-lg" />
               <Skeleton className="h-5 w-4/5 rounded-lg" />
               <Skeleton className="h-5 w-1/6 rounded-lg" />
             </div>
-            <div className=" border-b border-gray w-[700px]" />
-            <div className="w-full flex flex-col gap-2 p-6">
-              <Skeleton className="h-5 w-1/4 rounded-lg" />
-              <Skeleton className="h-5 w-4/5 rounded-lg" />
-              <Skeleton className="h-5 w-1/6 rounded-lg" />
-            </div>
-            <div className=" border-b border-gray w-[700px]" />
+            <div className=" border-b border-gray lg:w-[700px] sm:w-[350px]"/>
           </div>
         )}
       </div>

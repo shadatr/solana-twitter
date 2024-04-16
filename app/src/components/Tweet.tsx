@@ -116,7 +116,7 @@ const TweetComponent = ({ tweet }: { tweet: TweetType }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 w-[700px] px-8 py-4 border-b border-gray">
+    <div className="flex flex-col gap-2 lg:w-[700px] sm:w-[350px] px-8 py-4 border-b border-gray lg:text-sm sm:text-xxsm">
       <div className="flex justify-between items-center">
         <span className="flex gap-3">
           <Link to={`/users/${tweet.author_display}`} className="font-black">

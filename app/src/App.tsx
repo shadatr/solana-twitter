@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="flex w-screen min-h-screen justify-center ">
       <Router>
-        <div className="flex justify-center w-[1600px]">
+        <div className="flex justify-center lg:w-[1600px] sm:w-[350px]">
           <SideBar />
           <Routes>
             <Route path="/" element={<Home />} />

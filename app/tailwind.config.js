@@ -25,7 +25,7 @@ export default {
         md: "20px",
         sm:"18px",
         xsm:"15px",
-        xxsm:"8px"
+        xxsm:"12px"
       },
     },
     screens: {

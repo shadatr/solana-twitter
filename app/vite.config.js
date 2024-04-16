@@ -8,5 +8,8 @@ export default defineConfig({
     'process.env': {},
     global: 'window',
   },
+  // alias: {
+  //   "@": path.resolve(__dirname, "./src"),
+  // },
 
 })

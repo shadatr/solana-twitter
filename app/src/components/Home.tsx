@@ -67,15 +67,15 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col items-start w-[700px] border-l border-r border-gray">
+    <div className="flex flex-col items-start lg:w-[700px] sm:w-[350px]  border-l border-r border-gray lg:text-sm sm:text-xxsm">
       <p className=" border-b border-gray p-4 text-md font-bold w-full">Home</p>
-      {wallet.connected ? (
+      {!wallet.connected ? (
         [
           <textarea
           key={1}
             rows={1}
             ref={textarea}
-            className="text-xl w-[650px] focus:outline-none resize-none p-2 mx-8 my-3 bg-black"
+            className="lg:text-xl sm:text-sm lg:w-[650px] sm:w-[300px] focus:outline-none resize-none p-2 mx-8 my-3 bg-black"
             placeholder="What's happening?"
             onChange={handleInputChange}
           />,
@@ -93,7 +93,7 @@ const Home = () => {
                  (topic.current?.value && textarea.current?.value)
                     ? "bg-babyBlue"
                     : "bg-darkGray hover:cursor-not-allowed"
-                } px-4 py-2 rounded-2xl font-bold text-secondary`}
+                } lg:px-4 lg:py-2 sm:px-3 sm:py-1 rounded-2xl font-bold text-secondary lg:text-sm sm:text-xxsm`}
                 onClick={sendtweet}
               >
                 Tweet
@@ -110,30 +110,30 @@ const Home = () => {
           tweets.length > 0 ? (
             tweets.map((tweet) => <Tweet tweet={tweet} />)
           ) : (
-            <div className="w-[700px] text-md font-bold items-center justify-center flex py-10 text-darkGray">
+            <div className="lg:w-[700px] sm:w-[350px] text-md font-bold items-center justify-center flex py-10 text-darkGray">
               No tweets were found here...
             </div>
           )
         ) : ( 
           <div>
+            <div className="lg:w-[700px] sm:w-[350px] flex flex-col gap-2 p-6">
+              <Skeleton className="h-5 w-1/4 rounded-lg" />
+              <Skeleton className="h-5 w-4/5 rounded-lg" />
+              <Skeleton className="h-5 w-1/6 rounded-lg" />
+            </div>
+            <div className=" border-b border-gray lg:w-[700px] sm:w-[350px]"/>
             <div className="w-full flex flex-col gap-2 p-6">
               <Skeleton className="h-5 w-1/4 rounded-lg" />
               <Skeleton className="h-5 w-4/5 rounded-lg" />
               <Skeleton className="h-5 w-1/6 rounded-lg" />
             </div>
-            <div className=" border-b border-gray w-[700px]"/>
+            <div className=" border-b border-gray lg:w-[700px] sm:w-[350px]"/>
             <div className="w-full flex flex-col gap-2 p-6">
               <Skeleton className="h-5 w-1/4 rounded-lg" />
               <Skeleton className="h-5 w-4/5 rounded-lg" />
               <Skeleton className="h-5 w-1/6 rounded-lg" />
             </div>
-            <div className=" border-b border-gray w-[700px]"/>
-            <div className="w-full flex flex-col gap-2 p-6">
-              <Skeleton className="h-5 w-1/4 rounded-lg" />
-              <Skeleton className="h-5 w-4/5 rounded-lg" />
-              <Skeleton className="h-5 w-1/6 rounded-lg" />
-            </div>
-            <div className=" border-b border-gray w-[700px]"/>
+            <div className=" border-b border-gray lg:w-[700px] sm:w-[350px]"/>
           </div>
         )}
     </div>
