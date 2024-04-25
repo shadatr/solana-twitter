@@ -69,7 +69,7 @@ const Home = () => {
   return (
     <div className="flex flex-col items-start lg:w-[700px] sm:w-[350px]  border-l border-r border-gray lg:text-sm sm:text-xxsm">
       <p className=" border-b border-gray p-4 text-md font-bold w-full">Home</p>
-      {!wallet.connected ? (
+      {wallet.connected ? (
         [
           <textarea
           key={1}
